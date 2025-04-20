@@ -2,8 +2,6 @@ name: Generate Threads RSS
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 * * * *'  # every hour
 
 jobs:
   build:
@@ -16,20 +14,20 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: 3.x
 
     - name: Install dependencies
       run: |
-        pip install playwright
-        playwright install
+        python3 -m pip install -r requirements.txt
 
     - name: Run threads2rss
-      run: python threads2rss.py
+      run: |
+        python3 threads2rss.py
 
-    - name: Commit RSS feeds
+    - name: Push RSS to repo
       run: |
         git config user.name "rss-bot"
-        git config user.email "rss@example.com"
+        git config user.email "rss-bot@example.com"
         git add *.xml
-        git commit -m "Update RSS feeds" || echo "No changes"
+        git commit -m "Update RSS feeds" || echo "No changes to commit"
         git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/mynewbie7/threads-rss-feed.git main
