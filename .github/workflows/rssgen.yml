@@ -1,0 +1,35 @@
+name: Generate Threads RSS
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'  # every hour
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install playwright
+        playwright install
+
+    - name: Run threads2rss
+      run: python threads2rss.py
+
+    - name: Commit RSS feeds
+      run: |
+        git config user.name "rss-bot"
+        git config user.email "rss@example.com"
+        git add *.xml
+        git commit -m "Update RSS feeds" || echo "No changes"
+        git push
