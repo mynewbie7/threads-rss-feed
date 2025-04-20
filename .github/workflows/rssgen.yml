@@ -32,4 +32,4 @@ jobs:
         git config user.email "rss@example.com"
         git add *.xml
         git commit -m "Update RSS feeds" || echo "No changes"
-        git push
+        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/mynewbie7/threads-rss-feed.git main
